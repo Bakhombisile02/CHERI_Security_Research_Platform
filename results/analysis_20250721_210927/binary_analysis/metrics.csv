@@ -1,0 +1,3 @@
+Program,RISC-V Size (bytes),CHERI Size (bytes),Size Overhead (%),RISC-V Instructions,CHERI Instructions,Instruction Overhead (%)
+buffer_overflow,18280,8368,-54.22,127,179,40.94
+use_after_free,19968,22912,14.74,138,268,94.20
