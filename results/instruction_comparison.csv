@@ -1,0 +1,3 @@
+Program,Standard RISC-V Instructions,Authentic CHERI Instructions,Difference
+buffer_overflow,127,179,52
+use_after_free,138,268,130

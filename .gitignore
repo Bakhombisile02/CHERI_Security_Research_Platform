@@ -1,0 +1,49 @@
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+
+# Compiled binaries
+*_debug
+*_freestanding
+buffer_overflow_cheri
+buffer_overflow_cheri_baremetal
+use_after_free_cheri
+use_after_free_cheri_baremetal
+advanced_protections_cheri_freestanding
+advanced_vulnerabilities_freestanding
+advanced_vulnerabilities_freestanding_debug
+buffer_overflow
+use_after_free
+
+# GCC debug and intermediate files - all patterns
+*debug-*.c.*
+*.t.*
+*.r.*
+
+# Assembly files (generated)
+*.s
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# IDE and editor files
+.vscode/
+.DS_Store
+*.swp
+*.swo
+
+# Output directories
+output/
+build/
+dist/
+
+# Log files
+*.log
+
+# Results that might be regenerated
+results/complete_analysis_*/

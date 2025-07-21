@@ -1,0 +1,3 @@
+Program,Standard RISC-V (bytes),Authentic CHERI (bytes),Overhead (%)
+buffer_overflow,18280,8368,-54.22
+use_after_free,19968,22912,14.74
