@@ -1,0 +1,36 @@
+buffer_overflow:
+  Standard RISC-V: 18416 bytes
+  CHERI: 8424 bytes
+  Overhead: -9992 bytes (-54%)
+  Type: security
+
+use_after_free:
+  Standard RISC-V: 26488 bytes
+  CHERI: 22960 bytes
+  Overhead: -3528 bytes (-13%)
+  Type: security
+
+performance_benchmark:
+  Standard RISC-V: 38992 bytes
+  CHERI: 47416 bytes
+  Overhead: 8424 bytes (21%)
+  Type: performance
+
+cheri_limits:
+  Standard RISC-V: 34392 bytes
+  CHERI: 35112 bytes
+  Overhead: 720 bytes (2%)
+  Type: stress
+
+advanced_attacks:
+  Standard RISC-V: 38952 bytes
+  CHERI: 49648 bytes
+  Overhead: 10696 bytes (27%)
+  Type: security
+
+off_by_one:
+  Standard RISC-V: 17368 bytes
+  CHERI: 5288 bytes
+  Overhead: -12080 bytes (-69%)
+  Type: edge_case
+

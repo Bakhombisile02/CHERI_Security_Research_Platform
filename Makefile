@@ -389,10 +389,10 @@ fair-comparison: fair-stress-tests fair-benchmarks fair-analysis
 fair-stress-tests:
 	@echo "🧪 Building CHERI stress tests that push limits..."
 	@cd extreme-details/edge-cases/stress-tests && \
-	$(CHERI_CC) $(CHERI_CFLAGS) -o cheri-limits-stress-test cheri-limits-stress-test.c 2>&1 | tee cheri-limits-build.log && \
-	$(CHERI_CC) $(CHERI_CFLAGS) -o performance-comparison performance-comparison.c 2>&1 | tee performance-build.log
+	$(CHERI_CC) $(CHERI_CFLAGS) -o cheri-limits-stress-test-baremetal cheri-limits-stress-test-baremetal.c 2>&1 | tee cheri-limits-build.log && \
+	$(CHERI_CC) $(CHERI_CFLAGS) -o performance-comparison-baremetal performance-comparison-baremetal.c 2>&1 | tee performance-build.log
 	@cd extreme-details/edge-cases/corner-cases && \
-	$(CHERI_CC) $(CHERI_CFLAGS) -o advanced-attack-scenarios advanced-attack-scenarios.c 2>&1 | tee advanced-attacks-build.log
+	$(CHERI_CC) $(CHERI_CFLAGS) -o advanced-attack-scenarios-baremetal advanced-attack-scenarios-baremetal.c 2>&1 | tee advanced-attacks-build.log
 	@echo "Stress tests built successfully"
 
 fair-benchmarks:

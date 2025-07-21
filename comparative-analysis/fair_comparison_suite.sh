@@ -12,13 +12,13 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 RESULTS_DIR="$PROJECT_ROOT/results/fair_comparison_$(date +%Y%m%d_%H%M%S)"
 
 # Compiler configurations
-RISCV_CC="riscv64-unknown-elf-gcc"
+RISCV_CC="riscv64-elf-gcc"
 CHERI_CC="/Users/dlaba556/cheri/output/sdk/bin/clang"
 
-# Fair compilation flags
-COMMON_FLAGS="-O2 -g -Wall -Wextra -static"
+# Fair compilation flags (bare-metal compatible)
+COMMON_FLAGS="-nostdlib -nostartfiles -ffreestanding -O2 -g3 -Wall -Wextra"
 RISCV_FLAGS="$COMMON_FLAGS -march=rv64imac -mabi=lp64"
-CHERI_FLAGS="$COMMON_FLAGS --target=riscv64-unknown-freebsd"
+CHERI_FLAGS="$COMMON_FLAGS --config cheribsd-riscv64-purecap"
 
 echo "====================================="
 echo "FAIR COMPARISON TEST SUITE"
@@ -49,7 +49,8 @@ run_comparison_test() {
         
         # Get size information
         ls -la "$riscv_exe" | awk '{print "Size:", $5, "bytes"}' > "$RESULTS_DIR/${test_name}_riscv_analysis.txt"
-        objdump -d "$riscv_exe" | wc -l >> "$RESULTS_DIR/${test_name}_riscv_analysis.txt"
+        # Use riscv64-elf-objdump for RISC-V binaries
+        riscv64-elf-objdump -d "$riscv_exe" 2>/dev/null | wc -l >> "$RESULTS_DIR/${test_name}_riscv_analysis.txt" || echo "objdump unavailable" >> "$RESULTS_DIR/${test_name}_riscv_analysis.txt"
         
     else
         echo "❌ Standard RISC-V build failed"
@@ -63,7 +64,8 @@ run_comparison_test() {
         
         # Get size information
         ls -la "$cheri_exe" | awk '{print "Size:", $5, "bytes"}' > "$RESULTS_DIR/${test_name}_cheri_analysis.txt"
-        objdump -d "$cheri_exe" | wc -l >> "$RESULTS_DIR/${test_name}_cheri_analysis.txt"
+        # Use CHERI objdump for CHERI binaries
+        /Users/dlaba556/cheri/output/sdk/bin/llvm-objdump -d "$cheri_exe" 2>/dev/null | wc -l >> "$RESULTS_DIR/${test_name}_cheri_analysis.txt" || echo "objdump unavailable" >> "$RESULTS_DIR/${test_name}_cheri_analysis.txt"
         
     else
         echo "❌ CHERI build failed"
@@ -118,9 +120,9 @@ analyze_assembly_differences() {
         echo "CHERI:  $(basename "$cheri_exe")"
         echo ""
         
-        # Count instructions
-        local riscv_instructions=$(objdump -d "$riscv_exe" | grep -E "^\s*[0-9a-f]+:" | wc -l)
-        local cheri_instructions=$(objdump -d "$cheri_exe" | grep -E "^\s*[0-9a-f]+:" | wc -l)
+        # Count instructions using proper toolchain objdumps
+        local riscv_instructions=$(riscv64-elf-objdump -d "$riscv_exe" 2>/dev/null | grep -E "^\s*[0-9a-f]+:" | wc -l)
+        local cheri_instructions=$(/Users/dlaba556/cheri/output/sdk/bin/llvm-objdump -d "$cheri_exe" 2>/dev/null | grep -E "^\s*[0-9a-f]+:" | wc -l)
         
         echo "Instruction Count Analysis:"
         echo "Standard RISC-V: $riscv_instructions instructions"
@@ -130,12 +132,12 @@ analyze_assembly_differences() {
         
         # Look for CHERI-specific instructions
         echo "CHERI-specific instructions found:"
-        objdump -d "$cheri_exe" | grep -E "(c[a-z]+|cheri)" | head -10 || echo "None found in sample"
+        /Users/dlaba556/cheri/output/sdk/bin/llvm-objdump -d "$cheri_exe" 2>/dev/null | grep -E "(c[a-z]+|cheri)" | head -10 || echo "None found in sample"
         echo ""
         
         # Save detailed assembly analysis
-        objdump -d "$riscv_exe" > "$RESULTS_DIR/assembly_riscv.txt"
-        objdump -d "$cheri_exe" > "$RESULTS_DIR/assembly_cheri.txt"
+        riscv64-elf-objdump -d "$riscv_exe" > "$RESULTS_DIR/assembly_riscv.txt" 2>/dev/null || echo "objdump unavailable" > "$RESULTS_DIR/assembly_riscv.txt"
+        /Users/dlaba556/cheri/output/sdk/bin/llvm-objdump -d "$cheri_exe" > "$RESULTS_DIR/assembly_cheri.txt" 2>/dev/null || echo "objdump unavailable" > "$RESULTS_DIR/assembly_cheri.txt"
         
         echo "Full assembly dumps saved to results directory."
     fi
@@ -154,18 +156,18 @@ main() {
     # Test 2: Performance stress tests
     echo ""
     echo "=== PERFORMANCE STRESS TESTS ==="
-    run_comparison_test "performance_benchmark" "$PROJECT_ROOT/extreme-details/edge-cases/stress-tests/performance-comparison.c" "performance"
-    run_comparison_test "cheri_limits" "$PROJECT_ROOT/extreme-details/edge-cases/stress-tests/cheri-limits-stress-test.c" "stress"
+    run_comparison_test "performance_benchmark" "$PROJECT_ROOT/extreme-details/edge-cases/stress-tests/performance-comparison-baremetal.c" "performance"
+    run_comparison_test "cheri_limits" "$PROJECT_ROOT/extreme-details/edge-cases/stress-tests/cheri-limits-stress-test-baremetal.c" "stress"
     
     # Test 3: Advanced attack scenarios
     echo ""
     echo "=== ADVANCED ATTACK SCENARIOS ==="
-    run_comparison_test "advanced_attacks" "$PROJECT_ROOT/extreme-details/edge-cases/corner-cases/advanced-attack-scenarios.c" "security"
+    run_comparison_test "advanced_attacks" "$PROJECT_ROOT/extreme-details/edge-cases/corner-cases/advanced-attack-scenarios-baremetal.c" "security"
     
     # Test 4: Edge cases
     echo ""
     echo "=== EDGE CASE TESTS ==="
-    run_comparison_test "off_by_one" "$PROJECT_ROOT/extreme-details/edge-cases/boundary-conditions/test-off-by-one.c" "edge_case"
+    run_comparison_test "off_by_one" "$PROJECT_ROOT/extreme-details/edge-cases/boundary-conditions/test-off-by-one-baremetal.c" "edge_case"
     
     # Assembly analysis
     echo ""

@@ -1,0 +1,1109 @@
+
+/Users/dlaba556/CHERI_Security_Research_Platform/results/fair_comparison_20250721_213626/advanced_attacks_cheri:	file format elf64-littleriscv
+
+Disassembly of section .text:
+
+0000000000001310 <simple_print>:
+    1310: 97 35 00 00  	auipcc	ca1, 3
+    1314: 8f a5 05 e9  	clc	ca1, -368(ca1)
+    1318: 83 46 05 00  	clbu	a3, 0(ca0)
+    131c: 90 41        	clw	a2, 0(ca1)
+    131e: b3 36 d0 00  	snez	a3, a3
+    1322: 05 67        	lui	a4, 1
+    1324: 7d 37        	addiw	a4, a4, -1
+    1326: 33 37 e6 00  	sltu	a4, a2, a4
+    132a: f9 8e        	and	a3, a3, a4
+    132c: 99 ce        	beqz	a3, 0x134a <simple_print+0x3a>
+    132e: 83 46 15 00  	clbu	a3, 1(ca0)
+    1332: 5b 15 15 00  	cincoffset	ca0, ca0, 1
+    1336: b3 36 d0 00  	snez	a3, a3
+    133a: 1b 57 16 00  	srliw	a4, a2, 1
+    133e: 13 37 f7 7f  	sltiu	a4, a4, 2047
+    1342: f9 8e        	and	a3, a3, a4
+    1344: 05 26        	addiw	a2, a2, 1
+    1346: e5 f6        	bnez	a3, 0x132e <simple_print+0x1e>
+    1348: 90 c1        	csw	a2, 0(ca1)
+    134a: 82 80        	cret
+
+000000000000134c <simple_malloc>:
+    134c: 97 35 00 00  	auipcc	ca1, 3
+    1350: 8f a5 45 e6  	clc	ca1, -412(ca1)
+    1354: 90 61        	cld	a2, 0(ca1)
+    1356: 1d 05        	addi	a0, a0, 7
+    1358: 61 99        	andi	a0, a0, -8
+    135a: b3 06 a6 00  	add	a3, a2, a0
+    135e: 37 07 40 00  	lui	a4, 1024
+    1362: 5b 05 a0 fe  	cmove	ca0, cnull
+    1366: 63 69 d7 00  	bltu	a4, a3, 0x1378 <simple_malloc+0x2c>
+    136a: 17 35 00 00  	auipcc	ca0, 3
+    136e: 0f 25 65 e5  	clc	ca0, -426(ca0)
+    1372: 5b 05 c5 22  	cincoffset	ca0, ca0, a2
+    1376: 94 e1        	csd	a3, 0(ca1)
+    1378: 82 80        	cret
+
+000000000000137a <simple_memset>:
+    137a: 09 ca        	beqz	a2, 0x138c <simple_memset+0x12>
+    137c: 81 46        	li	a3, 0
+    137e: 5b 07 d5 22  	cincoffset	ca4, ca0, a3
+    1382: 85 06        	addi	a3, a3, 1
+    1384: 23 00 b7 00  	csb	a1, 0(ca4)
+    1388: e3 1b d6 fe  	bne	a2, a3, 0x137e <simple_memset+0x4>
+    138c: 82 80        	cret
+
+000000000000138e <simple_memcpy>:
+    138e: 09 ce        	beqz	a2, 0x13a8 <simple_memcpy+0x1a>
+    1390: 81 46        	li	a3, 0
+    1392: 5b 87 d5 22  	cincoffset	ca4, ca1, a3
+    1396: 03 07 07 00  	clb	a4, 0(ca4)
+    139a: db 07 d5 22  	cincoffset	ca5, ca0, a3
+    139e: 85 06        	addi	a3, a3, 1
+    13a0: 23 80 e7 00  	csb	a4, 0(ca5)
+    13a4: e3 17 d6 fe  	bne	a2, a3, 0x1392 <simple_memcpy+0x4>
+    13a8: 82 80        	cret
+
+00000000000013aa <attack_buffer_overflow_rop>:
+    13aa: 17 38 00 00  	auipcc	ca6, 3
+    13ae: 0f 28 68 df  	clc	ca6, -522(ca6)
+    13b2: 83 25 08 00  	clw	a1, 0(ca6)
+    13b6: 05 65        	lui	a0, 1
+    13b8: 1b 06 e5 ff  	addiw	a2, a0, -2
+    13bc: 63 60 b6 02  	bltu	a2, a1, 0x13dc <attack_buffer_overflow_rop+0x32>
+    13c0: 3b 05 b6 40  	subw	a0, a2, a1
+    13c4: 93 06 a0 02  	li	a3, 42
+    13c8: 63 64 d5 00  	bltu	a0, a3, 0x13d0 <attack_buffer_overflow_rop+0x26>
+    13cc: 13 05 a0 02  	li	a0, 42
+    13d0: 2d 9d        	addw	a0, a0, a1
+    13d2: 9b 05 15 00  	addiw	a1, a0, 1
+    13d6: 05 05        	addi	a0, a0, 1
+    13d8: 23 20 a8 00  	csw	a0, 0(ca6)
+    13dc: 97 36 00 00  	auipcc	ca3, 3
+    13e0: 8f a6 46 dd  	clc	ca3, -556(ca3)
+    13e4: 88 62        	cld	a0, 0(ca3)
+    13e6: 13 07 05 20  	addi	a4, a0, 512
+    13ea: b7 07 40 00  	lui	a5, 1024
+    13ee: 63 e4 e7 0a  	bltu	a5, a4, 0x1496 <attack_buffer_overflow_rop+0xec>
+    13f2: 97 37 00 00  	auipcc	ca5, 3
+    13f6: 8f a7 e7 dc  	clc	ca5, -562(ca5)
+    13fa: 98 e2        	csd	a4, 0(ca3)
+    13fc: 85 66        	lui	a3, 1
+    13fe: 1b 87 e6 ff  	addiw	a4, a3, -2
+    1402: db 86 a7 22  	cincoffset	ca3, ca5, a0
+    1406: 63 66 b7 04  	bltu	a4, a1, 0x1452 <attack_buffer_overflow_rop+0xa8>
+    140a: 3b 05 b6 40  	subw	a0, a2, a1
+    140e: 13 07 30 02  	li	a4, 35
+    1412: 63 64 e5 00  	bltu	a0, a4, 0x141a <attack_buffer_overflow_rop+0x70>
+    1416: 13 05 30 02  	li	a0, 35
+    141a: 2d 9d        	addw	a0, a0, a1
+    141c: 93 05 15 00  	addi	a1, a0, 1
+    1420: 23 20 b8 00  	csw	a1, 0(ca6)
+    1424: 1b 57 15 00  	srliw	a4, a0, 1
+    1428: 93 07 e0 7f  	li	a5, 2046
+    142c: 9b 05 15 00  	addiw	a1, a0, 1
+    1430: 63 e1 e7 02  	bltu	a5, a4, 0x1452 <attack_buffer_overflow_rop+0xa8>
+    1434: 13 45 f5 ff  	not	a0, a0
+    1438: 31 9d        	addw	a0, a0, a2
+    143a: 13 07 20 02  	li	a4, 34
+    143e: 63 64 e5 00  	bltu	a0, a4, 0x1446 <attack_buffer_overflow_rop+0x9c>
+    1442: 13 05 20 02  	li	a0, 34
+    1446: 2d 9d        	addw	a0, a0, a1
+    1448: 9b 05 15 00  	addiw	a1, a0, 1
+    144c: 05 05        	addi	a0, a0, 1
+    144e: 23 20 a8 00  	csw	a0, 0(ca6)
+    1452: 01 47        	li	a4, 0
+    1454: db a6 06 20  	csetbounds	ca3, ca3, 512
+    1458: 93 07 f0 1f  	li	a5, 511
+    145c: 13 05 00 40  	li	a0, 1024
+    1460: 21 a0        	j	0x1468 <attack_buffer_overflow_rop+0xbe>
+    1462: 05 07        	addi	a4, a4, 1
+    1464: 63 09 a7 00  	beq	a4, a0, 0x1476 <attack_buffer_overflow_rop+0xcc>
+    1468: e3 ed e7 fe  	bltu	a5, a4, 0x1462 <attack_buffer_overflow_rop+0xb8>
+    146c: db 88 e6 22  	cincoffset	ca7, ca3, a4
+    1470: 23 80 e8 00  	csb	a4, 0(ca7)
+    1474: fd b7        	j	0x1462 <attack_buffer_overflow_rop+0xb8>
+    1476: 05 65        	lui	a0, 1
+    1478: 79 35        	addiw	a0, a0, -2
+    147a: 63 6e b5 00  	bltu	a0, a1, 0x1496 <attack_buffer_overflow_rop+0xec>
+    147e: 3b 05 b6 40  	subw	a0, a2, a1
+    1482: 13 06 90 02  	li	a2, 41
+    1486: 63 64 c5 00  	bltu	a0, a2, 0x148e <attack_buffer_overflow_rop+0xe4>
+    148a: 13 05 90 02  	li	a0, 41
+    148e: 2e 95        	add	a0, a0, a1
+    1490: 05 05        	addi	a0, a0, 1
+    1492: 23 20 a8 00  	csw	a0, 0(ca6)
+    1496: 82 80        	cret
+
+0000000000001498 <attack_use_after_free>:
+    1498: 7d 71        	cincoffset	csp, csp, -16
+    149a: 97 38 00 00  	auipcc	ca7, 3
+    149e: 8f a8 68 d0  	clc	ca7, -762(ca7)
+    14a2: 03 ae 08 00  	clw	t3, 0(ca7)
+    14a6: 05 65        	lui	a0, 1
+    14a8: 9b 02 e5 ff  	addiw	t0, a0, -2
+    14ac: 63 ef c2 01  	bltu	t0, t3, 0x14ca <attack_use_after_free+0x32>
+    14b0: 3b 85 c2 41  	subw	a0, t0, t3
+    14b4: 75 46        	li	a2, 29
+    14b6: 63 63 c5 00  	bltu	a0, a2, 0x14bc <attack_use_after_free+0x24>
+    14ba: 75 45        	li	a0, 29
+    14bc: 3b 05 ae 00  	addw	a0, t3, a0
+    14c0: 1b 0e 15 00  	addiw	t3, a0, 1
+    14c4: 05 05        	addi	a0, a0, 1
+    14c6: 23 a0 a8 00  	csw	a0, 0(ca7)
+    14ca: 17 33 00 00  	auipcc	ct1, 3
+    14ce: 0f 23 63 ce  	clc	ct1, -794(ct1)
+    14d2: 03 35 03 00  	cld	a0, 0(ct1)
+    14d6: 93 03 05 10  	addi	t2, a0, 256
+    14da: 37 06 40 00  	lui	a2, 1024
+    14de: 63 63 76 12  	bltu	a2, t2, 0x1604 <attack_use_after_free+0x16c>
+    14e2: 17 38 00 00  	auipcc	ca6, 3
+    14e6: 0f 28 e8 cd  	clc	ca6, -802(ca6)
+    14ea: 01 46        	li	a2, 0
+    14ec: 01 47        	li	a4, 0
+    14ee: db 06 a8 22  	cincoffset	ca3, ca6, a0
+    14f2: 23 30 73 00  	csd	t2, 0(ct1)
+    14f6: db a6 06 10  	csetbounds	ca3, ca3, 256
+    14fa: 93 07 00 10  	li	a5, 256
+    14fe: 93 75 f7 00  	andi	a1, a4, 15
+    1502: 93 e5 05 05  	ori	a1, a1, 80
+    1506: db 8e c6 22  	cincoffset	ct4, ca3, a2
+    150a: 23 80 be 00  	csb	a1, 0(ct4)
+    150e: 05 06        	addi	a2, a2, 1
+    1510: 05 27        	addiw	a4, a4, 1
+    1512: e3 16 f6 fe  	bne	a2, a5, 0x14fe <attack_use_after_free+0x66>
+    1516: 05 66        	lui	a2, 1
+    1518: 79 36        	addiw	a2, a2, -2
+    151a: 63 61 c6 03  	bltu	a2, t3, 0x153c <attack_use_after_free+0xa4>
+    151e: 3b 86 c2 41  	subw	a2, t0, t3
+    1522: 13 07 e0 02  	li	a4, 46
+    1526: 63 64 e6 00  	bltu	a2, a4, 0x152e <attack_use_after_free+0x96>
+    152a: 13 06 e0 02  	li	a2, 46
+    152e: 3b 06 ce 00  	addw	a2, t3, a2
+    1532: 1b 0e 16 00  	addiw	t3, a2, 1
+    1536: 05 06        	addi	a2, a2, 1
+    1538: 23 a0 c8 00  	csw	a2, 0(ca7)
+    153c: 13 05 05 20  	addi	a0, a0, 512
+    1540: 37 06 40 00  	lui	a2, 1024
+    1544: 63 60 a6 0c  	bltu	a2, a0, 0x1604 <attack_use_after_free+0x16c>
+    1548: 01 46        	li	a2, 0
+    154a: db 05 78 22  	cincoffset	ca1, ca6, t2
+    154e: 23 30 a3 00  	csd	a0, 0(ct1)
+    1552: 5b a5 05 10  	csetbounds	ca0, ca1, 256
+    1556: 13 07 a0 0a  	li	a4, 170
+    155a: 93 07 00 10  	li	a5, 256
+    155e: db 05 c5 22  	cincoffset	ca1, ca0, a2
+    1562: 05 06        	addi	a2, a2, 1
+    1564: 23 80 e5 00  	csb	a4, 0(ca1)
+    1568: e3 1b f6 fe  	bne	a2, a5, 0x155e <attack_use_after_free+0xc6>
+    156c: 05 65        	lui	a0, 1
+    156e: 79 35        	addiw	a0, a0, -2
+    1570: 63 61 c5 03  	bltu	a0, t3, 0x1592 <attack_use_after_free+0xfa>
+    1574: 3b 85 c2 41  	subw	a0, t0, t3
+    1578: 93 05 30 02  	li	a1, 35
+    157c: 63 64 b5 00  	bltu	a0, a1, 0x1584 <attack_use_after_free+0xec>
+    1580: 13 05 30 02  	li	a0, 35
+    1584: 3b 05 ae 00  	addw	a0, t3, a0
+    1588: 1b 0e 15 00  	addiw	t3, a0, 1
+    158c: 05 05        	addi	a0, a0, 1
+    158e: 23 a0 a8 00  	csw	a0, 0(ca7)
+    1592: 5b 85 46 fe  	cgettag	a0, ca3
+    1596: 05 c5        	beqz	a0, 0x15be <attack_use_after_free+0x126>
+    1598: 03 85 06 00  	clb	a0, 0(ca3)
+    159c: a3 07 a1 00  	csb	a0, 15(csp)
+    15a0: 03 05 f1 00  	clb	a0, 15(csp)
+    15a4: 05 65        	lui	a0, 1
+    15a6: 79 35        	addiw	a0, a0, -2
+    15a8: 63 6e c5 03  	bltu	a0, t3, 0x15e4 <attack_use_after_free+0x14c>
+    15ac: 3b 85 c2 41  	subw	a0, t0, t3
+    15b0: 93 05 90 02  	li	a1, 41
+    15b4: 63 61 b5 02  	bltu	a0, a1, 0x15d6 <attack_use_after_free+0x13e>
+    15b8: 13 05 90 02  	li	a0, 41
+    15bc: 29 a8        	j	0x15d6 <attack_use_after_free+0x13e>
+    15be: 05 65        	lui	a0, 1
+    15c0: 79 35        	addiw	a0, a0, -2
+    15c2: 63 61 c5 05  	bltu	a0, t3, 0x1604 <attack_use_after_free+0x16c>
+    15c6: 3b 85 c2 41  	subw	a0, t0, t3
+    15ca: 93 05 60 03  	li	a1, 54
+    15ce: 63 64 b5 00  	bltu	a0, a1, 0x15d6 <attack_use_after_free+0x13e>
+    15d2: 13 05 60 03  	li	a0, 54
+    15d6: 3b 05 ae 00  	addw	a0, t3, a0
+    15da: 1b 0e 15 00  	addiw	t3, a0, 1
+    15de: 05 05        	addi	a0, a0, 1
+    15e0: 23 a0 a8 00  	csw	a0, 0(ca7)
+    15e4: 05 65        	lui	a0, 1
+    15e6: 79 35        	addiw	a0, a0, -2
+    15e8: 63 6e c5 01  	bltu	a0, t3, 0x1604 <attack_use_after_free+0x16c>
+    15ec: 3b 85 c2 41  	subw	a0, t0, t3
+    15f0: 93 05 80 02  	li	a1, 40
+    15f4: 63 64 b5 00  	bltu	a0, a1, 0x15fc <attack_use_after_free+0x164>
+    15f8: 13 05 80 02  	li	a0, 40
+    15fc: 72 95        	add	a0, a0, t3
+    15fe: 05 05        	addi	a0, a0, 1
+    1600: 23 a0 a8 00  	csw	a0, 0(ca7)
+    1604: 41 61        	cincoffset	csp, csp, 16
+    1606: 82 80        	cret
+
+0000000000001608 <attack_integer_overflow>:
+    1608: 17 38 00 00  	auipcc	ca6, 3
+    160c: 0f 28 88 b9  	clc	ca6, -1128(ca6)
+    1610: 83 22 08 00  	clw	t0, 0(ca6)
+    1614: 05 65        	lui	a0, 1
+    1616: 9b 08 e5 ff  	addiw	a7, a0, -2
+    161a: 63 e8 58 04  	bltu	a7, t0, 0x166a <attack_integer_overflow+0x62>
+    161e: 3b 85 58 40  	subw	a0, a7, t0
+    1622: fd 45        	li	a1, 31
+    1624: 63 63 b5 00  	bltu	a0, a1, 0x162a <attack_integer_overflow+0x22>
+    1628: 7d 45        	li	a0, 31
+    162a: bb 85 a2 00  	addw	a1, t0, a0
+    162e: 13 86 15 00  	addi	a2, a1, 1
+    1632: 9b d6 15 00  	srliw	a3, a1, 1
+    1636: 13 07 e0 7f  	li	a4, 2046
+    163a: 23 20 c8 00  	csw	a2, 0(ca6)
+    163e: 63 64 d7 02  	bltu	a4, a3, 0x1666 <attack_integer_overflow+0x5e>
+    1642: 16 95        	add	a0, a0, t0
+    1644: 93 45 f5 ff  	not	a1, a0
+    1648: bb 85 15 01  	addw	a1, a1, a7
+    164c: 13 06 d0 02  	li	a2, 45
+    1650: 63 e4 c5 00  	bltu	a1, a2, 0x1658 <attack_integer_overflow+0x50>
+    1654: 93 05 d0 02  	li	a1, 45
+    1658: 2d 9d        	addw	a0, a0, a1
+    165a: 9b 02 25 00  	addiw	t0, a0, 2
+    165e: 09 05        	addi	a0, a0, 2
+    1660: 23 20 a8 00  	csw	a0, 0(ca6)
+    1664: 19 a0        	j	0x166a <attack_integer_overflow+0x62>
+    1666: 9b 82 15 00  	addiw	t0, a1, 1
+    166a: 97 36 00 00  	auipcc	ca3, 3
+    166e: 8f a6 66 b4  	clc	ca3, -1210(ca3)
+    1672: 98 62        	cld	a4, 0(ca3)
+    1674: 05 45        	li	a0, 1
+    1676: 02 15        	slli	a0, a0, 32
+    1678: 93 07 85 ff  	addi	a5, a0, -8
+    167c: 33 06 f7 00  	add	a2, a4, a5
+    1680: 37 05 40 00  	lui	a0, 1024
+    1684: 05 25        	addiw	a0, a0, 1
+    1686: 63 6d a6 00  	bltu	a2, a0, 0x16a0 <attack_integer_overflow+0x98>
+    168a: 05 65        	lui	a0, 1
+    168c: 79 35        	addiw	a0, a0, -2
+    168e: 63 6f 55 04  	bltu	a0, t0, 0x16ec <attack_integer_overflow+0xe4>
+    1692: 3b 86 58 40  	subw	a2, a7, t0
+    1696: 65 45        	li	a0, 25
+    1698: 63 65 a6 04  	bltu	a2, a0, 0x16e2 <attack_integer_overflow+0xda>
+    169c: 65 46        	li	a2, 25
+    169e: 91 a0        	j	0x16e2 <attack_integer_overflow+0xda>
+    16a0: 17 33 00 00  	auipcc	ct1, 3
+    16a4: 0f 23 03 b2  	clc	ct1, -1248(ct1)
+    16a8: 01 45        	li	a0, 0
+    16aa: 81 45        	li	a1, 0
+    16ac: 90 e2        	csd	a2, 0(ca3)
+    16ae: 5b 06 e3 22  	cincoffset	ca2, ct1, a4
+    16b2: 5b 06 f6 10  	csetbounds	ca2, ca2, a5
+    16b6: 93 06 80 3e  	li	a3, 1000
+    16ba: 5b 07 a6 22  	cincoffset	ca4, ca2, a0
+    16be: 23 00 b7 00  	csb	a1, 0(ca4)
+    16c2: 85 05        	addi	a1, a1, 1
+    16c4: 21 05        	addi	a0, a0, 8
+    16c6: e3 9a d5 fe  	bne	a1, a3, 0x16ba <attack_integer_overflow+0xb2>
+    16ca: 05 65        	lui	a0, 1
+    16cc: 79 35        	addiw	a0, a0, -2
+    16ce: 63 6f 55 00  	bltu	a0, t0, 0x16ec <attack_integer_overflow+0xe4>
+    16d2: 3b 86 58 40  	subw	a2, a7, t0
+    16d6: 13 05 a0 02  	li	a0, 42
+    16da: 63 64 a6 00  	bltu	a2, a0, 0x16e2 <attack_integer_overflow+0xda>
+    16de: 13 06 a0 02  	li	a2, 42
+    16e2: 33 85 c2 00  	add	a0, t0, a2
+    16e6: 05 05        	addi	a0, a0, 1
+    16e8: 23 20 a8 00  	csw	a0, 0(ca6)
+    16ec: 82 80        	cret
+
+00000000000016ee <attack_format_string>:
+    16ee: 17 35 00 00  	auipcc	ca0, 3
+    16f2: 0f 25 25 ab  	clc	ca0, -1358(ca0)
+    16f6: 0c 41        	clw	a1, 0(ca0)
+    16f8: 05 66        	lui	a2, 1
+    16fa: 79 36        	addiw	a2, a2, -2
+    16fc: 63 6e b6 00  	bltu	a2, a1, 0x1718 <attack_format_string+0x2a>
+    1700: 0d 9e        	subw	a2, a2, a1
+    1702: 93 06 70 02  	li	a3, 39
+    1706: 63 64 d6 00  	bltu	a2, a3, 0x170e <attack_format_string+0x20>
+    170a: 13 06 70 02  	li	a2, 39
+    170e: 2d 9e        	addw	a2, a2, a1
+    1710: 9b 05 16 00  	addiw	a1, a2, 1
+    1714: 05 06        	addi	a2, a2, 1
+    1716: 10 c1        	csw	a2, 0(ca0)
+    1718: 17 36 00 00  	auipcc	ca2, 3
+    171c: 0f 26 86 a9  	clc	ca2, -1384(ca2)
+    1720: 14 62        	cld	a3, 0(ca2)
+    1722: 13 87 06 20  	addi	a4, a3, 512
+    1726: b7 07 40 00  	lui	a5, 1024
+    172a: 63 ed e7 06  	bltu	a5, a4, 0x17a4 <attack_format_string+0xb6>
+    172e: 17 38 00 00  	auipcc	ca6, 3
+    1732: 0f 28 28 a9  	clc	ca6, -1390(ca6)
+    1736: 81 47        	li	a5, 0
+    1738: db 06 d8 22  	cincoffset	ca3, ca6, a3
+    173c: 18 e2        	csd	a4, 0(ca2)
+    173e: 5b a6 06 20  	csetbounds	ca2, ca3, 512
+    1742: 93 06 00 20  	li	a3, 512
+    1746: 13 f7 f7 00  	andi	a4, a5, 15
+    174a: 13 67 07 06  	ori	a4, a4, 96
+    174e: 5b 08 f6 22  	cincoffset	ca6, ca2, a5
+    1752: 85 07        	addi	a5, a5, 1
+    1754: 23 00 e8 00  	csb	a4, 0(ca6)
+    1758: e3 97 d7 fe  	bne	a5, a3, 0x1746 <attack_format_string+0x58>
+    175c: 05 66        	lui	a2, 1
+    175e: 79 36        	addiw	a2, a2, -2
+    1760: 63 62 b6 04  	bltu	a2, a1, 0x17a4 <attack_format_string+0xb6>
+    1764: 3b 07 b6 40  	subw	a4, a2, a1
+    1768: 93 06 f0 02  	li	a3, 47
+    176c: 63 64 d7 00  	bltu	a4, a3, 0x1774 <attack_format_string+0x86>
+    1770: 13 07 f0 02  	li	a4, 47
+    1774: bb 86 e5 00  	addw	a3, a1, a4
+    1778: ba 95        	add	a1, a1, a4
+    177a: 13 87 15 00  	addi	a4, a1, 1
+    177e: 9b d7 16 00  	srliw	a5, a3, 1
+    1782: 13 08 e0 7f  	li	a6, 2046
+    1786: 18 c1        	csw	a4, 0(ca0)
+    1788: 63 6e f8 00  	bltu	a6, a5, 0x17a4 <attack_format_string+0xb6>
+    178c: 93 c5 f5 ff  	not	a1, a1
+    1790: b1 9d        	addw	a1, a1, a2
+    1792: 13 06 70 02  	li	a2, 39
+    1796: 63 e4 c5 00  	bltu	a1, a2, 0x179e <attack_format_string+0xb0>
+    179a: 93 05 70 02  	li	a1, 39
+    179e: b6 95        	add	a1, a1, a3
+    17a0: 89 05        	addi	a1, a1, 2
+    17a2: 0c c1        	csw	a1, 0(ca0)
+    17a4: 82 80        	cret
+
+00000000000017a6 <attack_double_free>:
+    17a6: 17 38 00 00  	auipcc	ca6, 3
+    17aa: 0f 28 a8 9f  	clc	ca6, -1542(ca6)
+    17ae: 83 25 08 00  	clw	a1, 0(ca6)
+    17b2: 05 65        	lui	a0, 1
+    17b4: 79 35        	addiw	a0, a0, -2
+    17b6: 63 6d b5 00  	bltu	a0, a1, 0x17d0 <attack_double_free+0x2a>
+    17ba: 0d 9d        	subw	a0, a0, a1
+    17bc: 69 46        	li	a2, 26
+    17be: 63 63 c5 00  	bltu	a0, a2, 0x17c4 <attack_double_free+0x1e>
+    17c2: 69 45        	li	a0, 26
+    17c4: 2d 9d        	addw	a0, a0, a1
+    17c6: 9b 05 15 00  	addiw	a1, a0, 1
+    17ca: 05 05        	addi	a0, a0, 1
+    17cc: 23 20 a8 00  	csw	a0, 0(ca6)
+    17d0: 97 36 00 00  	auipcc	ca3, 3
+    17d4: 8f a6 06 9e  	clc	ca3, -1568(ca3)
+    17d8: 9c 62        	cld	a5, 0(ca3)
+    17da: 13 86 07 10  	addi	a2, a5, 256
+    17de: 37 07 40 00  	lui	a4, 1024
+    17e2: 63 67 c7 00  	bltu	a4, a2, 0x17f0 <attack_double_free+0x4a>
+    17e6: 13 85 07 20  	addi	a0, a5, 512
+    17ea: 90 e2        	csd	a2, 0(ca3)
+    17ec: 63 73 a7 00  	bgeu	a4, a0, 0x17f2 <attack_double_free+0x4c>
+    17f0: 82 80        	cret
+    17f2: 97 38 00 00  	auipcc	ca7, 3
+    17f6: 8f a8 e8 9c  	clc	ca7, -1586(ca7)
+    17fa: 01 47        	li	a4, 0
+    17fc: db 87 f8 22  	cincoffset	ca5, ca7, a5
+    1800: 88 e2        	csd	a0, 0(ca3)
+    1802: db a6 07 10  	csetbounds	ca3, ca5, 256
+    1806: 13 05 a0 0a  	li	a0, 170
+    180a: 93 07 00 10  	li	a5, 256
+    180e: db 82 e6 22  	cincoffset	ct0, ca3, a4
+    1812: 05 07        	addi	a4, a4, 1
+    1814: 23 80 a2 00  	csb	a0, 0(ct0)
+    1818: e3 1b f7 fe  	bne	a4, a5, 0x180e <attack_double_free+0x68>
+    181c: 01 45        	li	a0, 0
+    181e: 5b 86 c8 22  	cincoffset	ca2, ca7, a2
+    1822: 5b 26 06 10  	csetbounds	ca2, ca2, 256
+    1826: 13 07 b0 0b  	li	a4, 187
+    182a: 93 07 00 10  	li	a5, 256
+    182e: db 08 a6 22  	cincoffset	ca7, ca2, a0
+    1832: 05 05        	addi	a0, a0, 1
+    1834: 23 80 e8 00  	csb	a4, 0(ca7)
+    1838: e3 1b f5 fe  	bne	a0, a5, 0x182e <attack_double_free+0x88>
+    183c: 05 65        	lui	a0, 1
+    183e: 9b 02 e5 ff  	addiw	t0, a0, -2
+    1842: 63 e3 b2 08  	bltu	t0, a1, 0x18c8 <attack_double_free+0x122>
+    1846: 3b 87 b2 40  	subw	a4, t0, a1
+    184a: 35 45        	li	a0, 13
+    184c: 63 63 a7 00  	bltu	a4, a0, 0x1852 <attack_double_free+0xac>
+    1850: 35 47        	li	a4, 13
+    1852: 3b 85 e5 00  	addw	a0, a1, a4
+    1856: 93 07 15 00  	addi	a5, a0, 1
+    185a: 1b 56 15 00  	srliw	a2, a0, 1
+    185e: 93 08 e0 7f  	li	a7, 2046
+    1862: 23 20 f8 00  	csw	a5, 0(ca6)
+    1866: 63 ef c8 04  	bltu	a7, a2, 0x18c4 <attack_double_free+0x11e>
+    186a: 33 85 e5 00  	add	a0, a1, a4
+    186e: 13 45 f5 ff  	not	a0, a0
+    1872: bb 07 55 00  	addw	a5, a0, t0
+    1876: 13 05 70 02  	li	a0, 39
+    187a: 63 e4 a7 00  	bltu	a5, a0, 0x1882 <attack_double_free+0xdc>
+    187e: 93 07 70 02  	li	a5, 39
+    1882: b3 88 f5 00  	add	a7, a1, a5
+    1886: 3b 85 e8 00  	addw	a0, a7, a4
+    188a: 13 03 25 00  	addi	t1, a0, 2
+    188e: 05 66        	lui	a2, 1
+    1890: 71 36        	addiw	a2, a2, -4
+    1892: 23 20 68 00  	csw	t1, 0(ca6)
+    1896: 63 69 a6 04  	bltu	a2, a0, 0x18e8 <attack_double_free+0x142>
+    189a: 33 85 e8 00  	add	a0, a7, a4
+    189e: 33 85 a2 40  	sub	a0, t0, a0
+    18a2: 79 35        	addiw	a0, a0, -2
+    18a4: 65 46        	li	a2, 25
+    18a6: bd 9d        	addw	a1, a1, a5
+    18a8: 63 63 c5 00  	bltu	a0, a2, 0x18ae <attack_double_free+0x108>
+    18ac: 65 45        	li	a0, 25
+    18ae: 2e 95        	add	a0, a0, a1
+    18b0: 39 9d        	addw	a0, a0, a4
+    18b2: 9b 05 35 00  	addiw	a1, a0, 3
+    18b6: 0d 05        	addi	a0, a0, 3
+    18b8: 23 20 a8 00  	csw	a0, 0(ca6)
+    18bc: 5b 85 46 fe  	cgettag	a0, ca3
+    18c0: 19 e5        	bnez	a0, 0x18ce <attack_double_free+0x128>
+    18c2: 05 a8        	j	0x18f2 <attack_double_free+0x14c>
+    18c4: 9b 05 15 00  	addiw	a1, a0, 1
+    18c8: 5b 85 46 fe  	cgettag	a0, ca3
+    18cc: 1d c1        	beqz	a0, 0x18f2 <attack_double_free+0x14c>
+    18ce: 05 65        	lui	a0, 1
+    18d0: 79 35        	addiw	a0, a0, -2
+    18d2: e3 6f b5 f0  	bltu	a0, a1, 0x17f0 <attack_double_free+0x4a>
+    18d6: bb 86 b2 40  	subw	a3, t0, a1
+    18da: 13 05 50 02  	li	a0, 37
+    18de: 63 e6 a6 02  	bltu	a3, a0, 0x190a <attack_double_free+0x164>
+    18e2: 93 06 50 02  	li	a3, 37
+    18e6: 15 a0        	j	0x190a <attack_double_free+0x164>
+    18e8: 9b 05 25 00  	addiw	a1, a0, 2
+    18ec: 5b 85 46 fe  	cgettag	a0, ca3
+    18f0: 79 fd        	bnez	a0, 0x18ce <attack_double_free+0x128>
+    18f2: 05 65        	lui	a0, 1
+    18f4: 79 35        	addiw	a0, a0, -2
+    18f6: e3 6d b5 ee  	bltu	a0, a1, 0x17f0 <attack_double_free+0x4a>
+    18fa: bb 86 b2 40  	subw	a3, t0, a1
+    18fe: 13 05 10 03  	li	a0, 49
+    1902: 63 e4 a6 00  	bltu	a3, a0, 0x190a <attack_double_free+0x164>
+    1906: 93 06 10 03  	li	a3, 49
+    190a: 3b 85 d5 00  	addw	a0, a1, a3
+    190e: 93 05 15 00  	addi	a1, a0, 1
+    1912: 1b 56 15 00  	srliw	a2, a0, 1
+    1916: 93 06 e0 7f  	li	a3, 2046
+    191a: 23 20 b8 00  	csw	a1, 0(ca6)
+    191e: e3 e9 c6 ec  	bltu	a3, a2, 0x17f0 <attack_double_free+0x4a>
+    1922: 93 45 f5 ff  	not	a1, a0
+    1926: bb 85 55 00  	addw	a1, a1, t0
+    192a: 13 06 50 02  	li	a2, 37
+    192e: 05 25        	addiw	a0, a0, 1
+    1930: 63 e4 c5 00  	bltu	a1, a2, 0x1938 <attack_double_free+0x192>
+    1934: 93 05 50 02  	li	a1, 37
+    1938: 2e 95        	add	a0, a0, a1
+    193a: 05 05        	addi	a0, a0, 1
+    193c: 23 20 a8 00  	csw	a0, 0(ca6)
+    1940: 82 80        	cret
+
+0000000000001942 <attack_type_confusion>:
+    1942: 17 38 00 00  	auipcc	ca6, 3
+    1946: 0f 28 e8 85  	clc	ca6, -1954(ca6)
+    194a: 03 23 08 00  	clw	t1, 0(ca6)
+    194e: 05 65        	lui	a0, 1
+    1950: 9b 02 e5 ff  	addiw	t0, a0, -2
+    1954: 63 ef 62 00  	bltu	t0, t1, 0x1972 <attack_type_confusion+0x30>
+    1958: 3b 85 62 40  	subw	a0, t0, t1
+    195c: f5 46        	li	a3, 29
+    195e: 63 63 d5 00  	bltu	a0, a3, 0x1964 <attack_type_confusion+0x22>
+    1962: 75 45        	li	a0, 29
+    1964: 3b 05 a3 00  	addw	a0, t1, a0
+    1968: 1b 03 15 00  	addiw	t1, a0, 1
+    196c: 05 05        	addi	a0, a0, 1
+    196e: 23 20 a8 00  	csw	a0, 0(ca6)
+    1972: 97 36 00 00  	auipcc	ca3, 3
+    1976: 8f a6 e6 83  	clc	ca3, -1986(ca3)
+    197a: 98 62        	cld	a4, 0(ca3)
+    197c: 93 07 07 40  	addi	a5, a4, 1024
+    1980: 37 05 40 00  	lui	a0, 1024
+    1984: 63 69 f5 08  	bltu	a0, a5, 0x1a16 <attack_type_confusion+0xd4>
+    1988: 97 38 00 00  	auipcc	ca7, 3
+    198c: 8f a8 88 83  	clc	ca7, -1992(ca7)
+    1990: 01 45        	li	a0, 0
+    1992: 5b 87 e8 22  	cincoffset	ca4, ca7, a4
+    1996: 9c e2        	csd	a5, 0(ca3)
+    1998: db 26 07 40  	csetbounds	ca3, ca4, 1024
+    199c: 37 57 34 12  	lui	a4, 74565
+    19a0: 1b 07 87 67  	addiw	a4, a4, 1656
+    19a4: 93 07 00 10  	li	a5, 256
+    19a8: 13 16 25 00  	slli	a2, a0, 2
+    19ac: 5b 86 c6 22  	cincoffset	ca2, ca3, a2
+    19b0: b3 05 e5 00  	add	a1, a0, a4
+    19b4: 05 05        	addi	a0, a0, 1
+    19b6: 0c c2        	csw	a1, 0(ca2)
+    19b8: e3 18 f5 fe  	bne	a0, a5, 0x19a8 <attack_type_confusion+0x66>
+    19bc: 05 65        	lui	a0, 1
+    19be: 79 35        	addiw	a0, a0, -2
+    19c0: 63 61 65 02  	bltu	a0, t1, 0x19e2 <attack_type_confusion+0xa0>
+    19c4: 3b 85 62 40  	subw	a0, t0, t1
+    19c8: 13 07 c0 02  	li	a4, 44
+    19cc: 63 64 e5 00  	bltu	a0, a4, 0x19d4 <attack_type_confusion+0x92>
+    19d0: 13 05 c0 02  	li	a0, 44
+    19d4: 3b 05 a3 00  	addw	a0, t1, a0
+    19d8: 1b 03 15 00  	addiw	t1, a0, 1
+    19dc: 05 05        	addi	a0, a0, 1
+    19de: 23 20 a8 00  	csw	a0, 0(ca6)
+    19e2: 01 45        	li	a0, 0
+    19e4: 13 07 00 40  	li	a4, 1024
+    19e8: db 85 a6 22  	cincoffset	ca1, ca3, a0
+    19ec: 23 80 a5 00  	csb	a0, 0(ca1)
+    19f0: 05 05        	addi	a0, a0, 1
+    19f2: e3 1b e5 fe  	bne	a0, a4, 0x19e8 <attack_type_confusion+0xa6>
+    19f6: 05 65        	lui	a0, 1
+    19f8: 79 35        	addiw	a0, a0, -2
+    19fa: 63 6e 65 00  	bltu	a0, t1, 0x1a16 <attack_type_confusion+0xd4>
+    19fe: 3b 85 62 40  	subw	a0, t0, t1
+    1a02: 93 05 80 02  	li	a1, 40
+    1a06: 63 64 b5 00  	bltu	a0, a1, 0x1a0e <attack_type_confusion+0xcc>
+    1a0a: 13 05 80 02  	li	a0, 40
+    1a0e: 1a 95        	add	a0, a0, t1
+    1a10: 05 05        	addi	a0, a0, 1
+    1a12: 23 20 a8 00  	csw	a0, 0(ca6)
+    1a16: 82 80        	cret
+
+0000000000001a18 <attack_rop_gadgets>:
+    1a18: 17 25 00 00  	auipcc	ca0, 2
+    1a1c: 0f 25 85 78  	clc	ca0, 1928(ca0)
+    1a20: 10 41        	clw	a2, 0(ca0)
+    1a22: 85 65        	lui	a1, 1
+    1a24: 9b 86 e5 ff  	addiw	a3, a1, -2
+    1a28: 63 e7 c6 08  	bltu	a3, a2, 0x1ab6 <attack_rop_gadgets+0x9e>
+    1a2c: f5 35        	addiw	a1, a1, -3
+    1a2e: b3 86 c5 40  	sub	a3, a1, a2
+    1a32: 85 26        	addiw	a3, a3, 1
+    1a34: 7d 47        	li	a4, 31
+    1a36: 63 e3 e6 00  	bltu	a3, a4, 0x1a3c <attack_rop_gadgets+0x24>
+    1a3a: fd 46        	li	a3, 31
+    1a3c: 35 9e        	addw	a2, a2, a3
+    1a3e: 93 06 16 00  	addi	a3, a2, 1
+    1a42: 1b 57 16 00  	srliw	a4, a2, 1
+    1a46: 93 07 e0 7f  	li	a5, 2046
+    1a4a: 14 c1        	csw	a3, 0(ca0)
+    1a4c: 63 e5 e7 06  	bltu	a5, a4, 0x1ab6 <attack_rop_gadgets+0x9e>
+    1a50: bb 86 c5 40  	subw	a3, a1, a2
+    1a54: 13 07 60 03  	li	a4, 54
+    1a58: 05 26        	addiw	a2, a2, 1
+    1a5a: 63 e4 e6 00  	bltu	a3, a4, 0x1a62 <attack_rop_gadgets+0x4a>
+    1a5e: 93 06 60 03  	li	a3, 54
+    1a62: 3b 07 d6 00  	addw	a4, a2, a3
+    1a66: 36 96        	add	a2, a2, a3
+    1a68: 93 06 16 00  	addi	a3, a2, 1
+    1a6c: 9b 57 17 00  	srliw	a5, a4, 1
+    1a70: 13 08 e0 7f  	li	a6, 2046
+    1a74: 14 c1        	csw	a3, 0(ca0)
+    1a76: 63 60 f8 04  	bltu	a6, a5, 0x1ab6 <attack_rop_gadgets+0x9e>
+    1a7a: bb 87 c5 40  	subw	a5, a1, a2
+    1a7e: 93 06 c0 02  	li	a3, 44
+    1a82: 63 e4 d7 00  	bltu	a5, a3, 0x1a8a <attack_rop_gadgets+0x72>
+    1a86: 93 07 c0 02  	li	a5, 44
+    1a8a: 3b 08 f7 00  	addw	a6, a4, a5
+    1a8e: 3e 97        	add	a4, a4, a5
+    1a90: 09 07        	addi	a4, a4, 2
+    1a92: 85 66        	lui	a3, 1
+    1a94: f1 36        	addiw	a3, a3, -4
+    1a96: 18 c1        	csw	a4, 0(ca0)
+    1a98: 63 ef 06 01  	bltu	a3, a6, 0x1ab6 <attack_rop_gadgets+0x9e>
+    1a9c: 3e 96        	add	a2, a2, a5
+    1a9e: 13 46 f6 ff  	not	a2, a2
+    1aa2: b1 9d        	addw	a1, a1, a2
+    1aa4: 13 06 a0 02  	li	a2, 42
+    1aa8: 63 e4 c5 00  	bltu	a1, a2, 0x1ab0 <attack_rop_gadgets+0x98>
+    1aac: 93 05 a0 02  	li	a1, 42
+    1ab0: c2 95        	add	a1, a1, a6
+    1ab2: 8d 05        	addi	a1, a1, 3
+    1ab4: 0c c1        	csw	a1, 0(ca0)
+    1ab6: 82 80        	cret
+
+0000000000001ab8 <attack_information_disclosure>:
+    1ab8: 7d 71        	cincoffset	csp, csp, -16
+    1aba: 97 28 00 00  	auipcc	ca7, 2
+    1abe: 8f a8 68 6e  	clc	ca7, 1766(ca7)
+    1ac2: 03 a3 08 00  	clw	t1, 0(ca7)
+    1ac6: 05 65        	lui	a0, 1
+    1ac8: 79 35        	addiw	a0, a0, -2
+    1aca: 63 61 65 02  	bltu	a0, t1, 0x1aec <attack_information_disclosure+0x34>
+    1ace: 3b 05 65 40  	subw	a0, a0, t1
+    1ad2: 13 06 50 02  	li	a2, 37
+    1ad6: 63 64 c5 00  	bltu	a0, a2, 0x1ade <attack_information_disclosure+0x26>
+    1ada: 13 05 50 02  	li	a0, 37
+    1ade: 3b 05 a3 00  	addw	a0, t1, a0
+    1ae2: 1b 03 15 00  	addiw	t1, a0, 1
+    1ae6: 05 05        	addi	a0, a0, 1
+    1ae8: 23 a0 a8 00  	csw	a0, 0(ca7)
+    1aec: 17 26 00 00  	auipcc	ca2, 2
+    1af0: 0f 26 46 6c  	clc	ca2, 1732(ca2)
+    1af4: 1c 62        	cld	a5, 0(ca2)
+    1af6: 93 86 07 10  	addi	a3, a5, 256
+    1afa: 37 05 40 00  	lui	a0, 1024
+    1afe: 63 67 d5 0e  	bltu	a0, a3, 0x1bec <attack_information_disclosure+0x134>
+    1b02: 13 87 07 20  	addi	a4, a5, 512
+    1b06: 14 e2        	csd	a3, 0(ca2)
+    1b08: 63 62 e5 0e  	bltu	a0, a4, 0x1bec <attack_information_disclosure+0x134>
+    1b0c: 17 28 00 00  	auipcc	ca6, 2
+    1b10: 0f 28 48 6b  	clc	ca6, 1716(ca6)
+    1b14: 01 45        	li	a0, 0
+    1b16: db 07 f8 22  	cincoffset	ca5, ca6, a5
+    1b1a: 18 e2        	csd	a4, 0(ca2)
+    1b1c: 5b a6 07 10  	csetbounds	ca2, ca5, 256
+    1b20: 45 47        	li	a4, 17
+    1b22: 93 07 00 10  	li	a5, 256
+    1b26: db 02 a6 22  	cincoffset	ct0, ca2, a0
+    1b2a: 05 05        	addi	a0, a0, 1
+    1b2c: 23 80 e2 00  	csb	a4, 0(ct0)
+    1b30: e3 1b f5 fe  	bne	a0, a5, 0x1b26 <attack_information_disclosure+0x6e>
+    1b34: 01 45        	li	a0, 0
+    1b36: db 06 d8 22  	cincoffset	ca3, ca6, a3
+    1b3a: db a6 06 10  	csetbounds	ca3, ca3, 256
+    1b3e: 13 07 90 09  	li	a4, 153
+    1b42: 93 07 00 10  	li	a5, 256
+    1b46: 5b 88 a6 22  	cincoffset	ca6, ca3, a0
+    1b4a: 05 05        	addi	a0, a0, 1
+    1b4c: 23 00 e8 00  	csb	a4, 0(ca6)
+    1b50: e3 1b f5 fe  	bne	a0, a5, 0x1b46 <attack_information_disclosure+0x8e>
+    1b54: 05 65        	lui	a0, 1
+    1b56: 1b 08 e5 ff  	addiw	a6, a0, -2
+    1b5a: 63 6f 68 00  	bltu	a6, t1, 0x1b78 <attack_information_disclosure+0xc0>
+    1b5e: 3b 05 68 40  	subw	a0, a6, t1
+    1b62: f9 46        	li	a3, 30
+    1b64: 63 63 d5 00  	bltu	a0, a3, 0x1b6a <attack_information_disclosure+0xb2>
+    1b68: 79 45        	li	a0, 30
+    1b6a: 3b 05 a3 00  	addw	a0, t1, a0
+    1b6e: 1b 03 15 00  	addiw	t1, a0, 1
+    1b72: 05 05        	addi	a0, a0, 1
+    1b74: 23 a0 a8 00  	csw	a0, 0(ca7)
+    1b78: 01 47        	li	a4, 0
+    1b7a: 02 c6        	csw	zero, 12(csp)
+    1b7c: 93 07 f0 0f  	li	a5, 255
+    1b80: 93 06 00 20  	li	a3, 512
+    1b84: 21 a0        	j	0x1b8c <attack_information_disclosure+0xd4>
+    1b86: 05 07        	addi	a4, a4, 1
+    1b88: 63 0c d7 00  	beq	a4, a3, 0x1ba0 <attack_information_disclosure+0xe8>
+    1b8c: e3 ed e7 fe  	bltu	a5, a4, 0x1b86 <attack_information_disclosure+0xce>
+    1b90: 5b 05 e6 22  	cincoffset	ca0, ca2, a4
+    1b94: 03 45 05 00  	clbu	a0, 0(ca0)
+    1b98: b2 45        	clw	a1, 12(csp)
+    1b9a: 2e 95        	add	a0, a0, a1
+    1b9c: 2a c6        	csw	a0, 12(csp)
+    1b9e: e5 b7        	j	0x1b86 <attack_information_disclosure+0xce>
+    1ba0: 05 65        	lui	a0, 1
+    1ba2: 79 35        	addiw	a0, a0, -2
+    1ba4: 63 64 65 04  	bltu	a0, t1, 0x1bec <attack_information_disclosure+0x134>
+    1ba8: 3b 05 68 40  	subw	a0, a6, t1
+    1bac: 13 06 10 02  	li	a2, 33
+    1bb0: 63 64 c5 00  	bltu	a0, a2, 0x1bb8 <attack_information_disclosure+0x100>
+    1bb4: 13 05 10 02  	li	a0, 33
+    1bb8: b3 05 a3 00  	add	a1, t1, a0
+    1bbc: 13 85 15 00  	addi	a0, a1, 1
+    1bc0: 1b d6 15 00  	srliw	a2, a1, 1
+    1bc4: 93 06 e0 7f  	li	a3, 2046
+    1bc8: 23 a0 a8 00  	csw	a0, 0(ca7)
+    1bcc: 63 e0 c6 02  	bltu	a3, a2, 0x1bec <attack_information_disclosure+0x134>
+    1bd0: 13 c5 f5 ff  	not	a0, a1
+    1bd4: 3b 05 05 01  	addw	a0, a0, a6
+    1bd8: 13 06 00 03  	li	a2, 48
+    1bdc: 63 64 c5 00  	bltu	a0, a2, 0x1be4 <attack_information_disclosure+0x12c>
+    1be0: 13 05 00 03  	li	a0, 48
+    1be4: 2e 95        	add	a0, a0, a1
+    1be6: 09 05        	addi	a0, a0, 2
+    1be8: 23 a0 a8 00  	csw	a0, 0(ca7)
+    1bec: 41 61        	cincoffset	csp, csp, 16
+    1bee: 82 80        	cret
+
+0000000000001bf0 <main>:
+    1bf0: 5d 71        	cincoffset	csp, csp, -80
+    1bf2: 86 a0        	csc	cra, 64(csp)
+    1bf4: 22 b8        	csc	cs0, 48(csp)
+    1bf6: 26 b0        	csc	cs1, 32(csp)
+    1bf8: 4a a8        	csc	cs2, 16(csp)
+    1bfa: 4e a0        	csc	cs3, 0(csp)
+    1bfc: 17 24 00 00  	auipcc	cs0, 2
+    1c00: 0f 24 44 5a  	clc	cs0, 1444(cs0)
+    1c04: 08 40        	clw	a0, 0(cs0)
+    1c06: 85 65        	lui	a1, 1
+    1c08: 9b 89 e5 ff  	addiw	s3, a1, -2
+    1c0c: 63 e7 a9 0a  	bltu	s3, a0, 0x1cba <main+0xca>
+    1c10: bb 85 a9 40  	subw	a1, s3, a0
+    1c14: 13 06 40 02  	li	a2, 36
+    1c18: 63 e4 c5 00  	bltu	a1, a2, 0x1c20 <main+0x30>
+    1c1c: 93 05 40 02  	li	a1, 36
+    1c20: 3b 06 b5 00  	addw	a2, a0, a1
+    1c24: 93 06 16 00  	addi	a3, a2, 1
+    1c28: 1b 57 16 00  	srliw	a4, a2, 1
+    1c2c: 93 07 e0 7f  	li	a5, 2046
+    1c30: 14 c0        	csw	a3, 0(cs0)
+    1c32: 63 ed e7 06  	bltu	a5, a4, 0x1cac <main+0xbc>
+    1c36: b3 06 b5 00  	add	a3, a0, a1
+    1c3a: 93 c6 f6 ff  	not	a3, a3
+    1c3e: 3b 87 36 01  	addw	a4, a3, s3
+    1c42: 93 06 40 02  	li	a3, 36
+    1c46: 63 64 d7 00  	bltu	a4, a3, 0x1c4e <main+0x5e>
+    1c4a: 13 07 40 02  	li	a4, 36
+    1c4e: bb 06 e6 00  	addw	a3, a2, a4
+    1c52: 3a 96        	add	a2, a2, a4
+    1c54: 93 07 26 00  	addi	a5, a2, 2
+    1c58: 05 68        	lui	a6, 1
+    1c5a: 1b 06 c8 ff  	addiw	a2, a6, -4
+    1c5e: 1c c0        	csw	a5, 0(cs0)
+    1c60: 63 69 d6 04  	bltu	a2, a3, 0x1cb2 <main+0xc2>
+    1c64: 3a 95        	add	a0, a0, a4
+    1c66: 2e 95        	add	a0, a0, a1
+    1c68: 33 85 a9 40  	sub	a0, s3, a0
+    1c6c: 79 35        	addiw	a0, a0, -2
+    1c6e: 93 05 20 02  	li	a1, 34
+    1c72: 63 64 b5 00  	bltu	a0, a1, 0x1c7a <main+0x8a>
+    1c76: 13 05 20 02  	li	a0, 34
+    1c7a: 35 9d        	addw	a0, a0, a3
+    1c7c: 93 05 35 00  	addi	a1, a0, 3
+    1c80: 1b 56 25 00  	srliw	a2, a0, 2
+    1c84: 93 06 e0 3f  	li	a3, 1022
+    1c88: 0c c0        	csw	a1, 0(cs0)
+    1c8a: 63 e7 c6 02  	bltu	a3, a2, 0x1cb8 <main+0xc8>
+    1c8e: b3 85 a9 40  	sub	a1, s3, a0
+    1c92: f5 35        	addiw	a1, a1, -3
+    1c94: 13 06 a0 02  	li	a2, 42
+    1c98: 63 e4 c5 00  	bltu	a1, a2, 0x1ca0 <main+0xb0>
+    1c9c: 93 05 a0 02  	li	a1, 42
+    1ca0: a9 9d        	addw	a1, a1, a0
+    1ca2: 1b 85 45 00  	addiw	a0, a1, 4
+    1ca6: 91 05        	addi	a1, a1, 4
+    1ca8: 0c c0        	csw	a1, 0(cs0)
+    1caa: 01 a8        	j	0x1cba <main+0xca>
+    1cac: 1b 05 16 00  	addiw	a0, a2, 1
+    1cb0: 29 a0        	j	0x1cba <main+0xca>
+    1cb2: 1b 05 f8 ff  	addiw	a0, a6, -1
+    1cb6: 11 a0        	j	0x1cba <main+0xca>
+    1cb8: 0d 25        	addiw	a0, a0, 3
+    1cba: 17 29 00 00  	auipcc	cs2, 2
+    1cbe: 0f 29 69 4f  	clc	cs2, 1270(cs2)
+    1cc2: 83 35 09 00  	cld	a1, 0(cs2)
+    1cc6: 13 86 05 20  	addi	a2, a1, 512
+    1cca: b7 06 40 00  	lui	a3, 1024
+    1cce: 63 e2 c6 0a  	bltu	a3, a2, 0x1d72 <main+0x182>
+    1cd2: 97 26 00 00  	auipcc	ca3, 2
+    1cd6: 8f a6 e6 4e  	clc	ca3, 1262(ca3)
+    1cda: 23 30 c9 00  	csd	a2, 0(cs2)
+    1cde: 05 66        	lui	a2, 1
+    1ce0: 79 36        	addiw	a2, a2, -2
+    1ce2: db 85 b6 22  	cincoffset	ca1, ca3, a1
+    1ce6: 63 65 a6 04  	bltu	a2, a0, 0x1d30 <main+0x140>
+    1cea: 3b 86 a9 40  	subw	a2, s3, a0
+    1cee: 93 06 30 02  	li	a3, 35
+    1cf2: 63 64 d6 00  	bltu	a2, a3, 0x1cfa <main+0x10a>
+    1cf6: 13 06 30 02  	li	a2, 35
+    1cfa: 31 9d        	addw	a0, a0, a2
+    1cfc: 13 06 15 00  	addi	a2, a0, 1
+    1d00: 9b 56 15 00  	srliw	a3, a0, 1
+    1d04: 13 07 e0 7f  	li	a4, 2046
+    1d08: 10 c0        	csw	a2, 0(cs0)
+    1d0a: 63 62 d7 02  	bltu	a4, a3, 0x1d2e <main+0x13e>
+    1d0e: 13 46 f5 ff  	not	a2, a0
+    1d12: 3b 06 36 01  	addw	a2, a2, s3
+    1d16: 93 06 20 02  	li	a3, 34
+    1d1a: 63 64 d6 00  	bltu	a2, a3, 0x1d22 <main+0x132>
+    1d1e: 13 06 20 02  	li	a2, 34
+    1d22: 29 9e        	addw	a2, a2, a0
+    1d24: 1b 05 26 00  	addiw	a0, a2, 2
+    1d28: 09 06        	addi	a2, a2, 2
+    1d2a: 10 c0        	csw	a2, 0(cs0)
+    1d2c: 11 a0        	j	0x1d30 <main+0x140>
+    1d2e: 05 25        	addiw	a0, a0, 1
+    1d30: 01 46        	li	a2, 0
+    1d32: db a5 05 20  	csetbounds	ca1, ca1, 512
+    1d36: 93 06 f0 1f  	li	a3, 511
+    1d3a: 13 07 00 40  	li	a4, 1024
+    1d3e: 21 a0        	j	0x1d46 <main+0x156>
+    1d40: 05 06        	addi	a2, a2, 1
+    1d42: 63 09 e6 00  	beq	a2, a4, 0x1d54 <main+0x164>
+    1d46: e3 ed c6 fe  	bltu	a3, a2, 0x1d40 <main+0x150>
+    1d4a: db 87 c5 22  	cincoffset	ca5, ca1, a2
+    1d4e: 23 80 c7 00  	csb	a2, 0(ca5)
+    1d52: fd b7        	j	0x1d40 <main+0x150>
+    1d54: 85 65        	lui	a1, 1
+    1d56: f9 35        	addiw	a1, a1, -2
+    1d58: 63 ed a5 00  	bltu	a1, a0, 0x1d72 <main+0x182>
+    1d5c: bb 85 a9 40  	subw	a1, s3, a0
+    1d60: 13 06 90 02  	li	a2, 41
+    1d64: 63 e4 c5 00  	bltu	a1, a2, 0x1d6c <main+0x17c>
+    1d68: 93 05 90 02  	li	a1, 41
+    1d6c: 2e 95        	add	a0, a0, a1
+    1d6e: 05 05        	addi	a0, a0, 1
+    1d70: 08 c0        	csw	a0, 0(cs0)
+    1d72: 97 f0 ff ff  	auipcc	cra, 1048575
+    1d76: e7 80 60 72  	cjalr	1830(cra)
+    1d7a: 08 40        	clw	a0, 0(cs0)
+    1d7c: 85 65        	lui	a1, 1
+    1d7e: f9 35        	addiw	a1, a1, -2
+    1d80: 63 e3 a5 04  	bltu	a1, a0, 0x1dc6 <main+0x1d6>
+    1d84: bb 85 a9 40  	subw	a1, s3, a0
+    1d88: 7d 46        	li	a2, 31
+    1d8a: 63 e3 c5 00  	bltu	a1, a2, 0x1d90 <main+0x1a0>
+    1d8e: fd 45        	li	a1, 31
+    1d90: 2d 9d        	addw	a0, a0, a1
+    1d92: 93 05 15 00  	addi	a1, a0, 1
+    1d96: 1b 56 15 00  	srliw	a2, a0, 1
+    1d9a: 93 06 e0 7f  	li	a3, 2046
+    1d9e: 0c c0        	csw	a1, 0(cs0)
+    1da0: 63 e2 c6 02  	bltu	a3, a2, 0x1dc4 <main+0x1d4>
+    1da4: 93 45 f5 ff  	not	a1, a0
+    1da8: bb 85 35 01  	addw	a1, a1, s3
+    1dac: 13 06 d0 02  	li	a2, 45
+    1db0: 63 e4 c5 00  	bltu	a1, a2, 0x1db8 <main+0x1c8>
+    1db4: 93 05 d0 02  	li	a1, 45
+    1db8: a9 9d        	addw	a1, a1, a0
+    1dba: 1b 85 25 00  	addiw	a0, a1, 2
+    1dbe: 89 05        	addi	a1, a1, 2
+    1dc0: 0c c0        	csw	a1, 0(cs0)
+    1dc2: 11 a0        	j	0x1dc6 <main+0x1d6>
+    1dc4: 05 25        	addiw	a0, a0, 1
+    1dc6: 83 35 09 00  	cld	a1, 0(cs2)
+    1dca: 05 46        	li	a2, 1
+    1dcc: 02 16        	slli	a2, a2, 32
+    1dce: 93 06 86 ff  	addi	a3, a2, -8
+    1dd2: 33 86 d5 00  	add	a2, a1, a3
+    1dd6: 37 07 40 00  	lui	a4, 1024
+    1dda: 05 27        	addiw	a4, a4, 1
+    1ddc: 63 6d e6 00  	bltu	a2, a4, 0x1df6 <main+0x206>
+    1de0: 05 66        	lui	a2, 1
+    1de2: 79 36        	addiw	a2, a2, -2
+    1de4: 63 65 a6 08  	bltu	a2, a0, 0x1e6e <main+0x27e>
+    1de8: bb 86 a9 40  	subw	a3, s3, a0
+    1dec: 65 46        	li	a2, 25
+    1dee: 63 e7 c6 04  	bltu	a3, a2, 0x1e3c <main+0x24c>
+    1df2: e5 46        	li	a3, 25
+    1df4: a1 a0        	j	0x1e3c <main+0x24c>
+    1df6: 17 28 00 00  	auipcc	ca6, 2
+    1dfa: 0f 28 a8 3c  	clc	ca6, 970(ca6)
+    1dfe: 01 47        	li	a4, 0
+    1e00: 81 47        	li	a5, 0
+    1e02: db 05 b8 22  	cincoffset	ca1, ca6, a1
+    1e06: 23 30 c9 00  	csd	a2, 0(cs2)
+    1e0a: db 85 d5 10  	csetbounds	ca1, ca1, a3
+    1e0e: 93 06 80 3e  	li	a3, 1000
+    1e12: 5b 88 e5 22  	cincoffset	ca6, ca1, a4
+    1e16: 23 00 f8 00  	csb	a5, 0(ca6)
+    1e1a: 85 07        	addi	a5, a5, 1
+    1e1c: 21 07        	addi	a4, a4, 8
+    1e1e: e3 9a d7 fe  	bne	a5, a3, 0x1e12 <main+0x222>
+    1e22: 85 65        	lui	a1, 1
+    1e24: f9 35        	addiw	a1, a1, -2
+    1e26: 63 e3 a5 04  	bltu	a1, a0, 0x1e6c <main+0x27c>
+    1e2a: bb 86 a9 40  	subw	a3, s3, a0
+    1e2e: 93 05 a0 02  	li	a1, 42
+    1e32: 63 e4 b6 00  	bltu	a3, a1, 0x1e3a <main+0x24a>
+    1e36: 93 06 a0 02  	li	a3, 42
+    1e3a: b2 85        	mv	a1, a2
+    1e3c: 3b 06 d5 00  	addw	a2, a0, a3
+    1e40: 1b 05 16 00  	addiw	a0, a2, 1
+    1e44: 05 06        	addi	a2, a2, 1
+    1e46: 85 66        	lui	a3, 1
+    1e48: f9 36        	addiw	a3, a3, -2
+    1e4a: 10 c0        	csw	a2, 0(cs0)
+    1e4c: 63 e1 a6 02  	bltu	a3, a0, 0x1e6e <main+0x27e>
+    1e50: 3b 86 a9 40  	subw	a2, s3, a0
+    1e54: 93 06 70 02  	li	a3, 39
+    1e58: 63 64 d6 00  	bltu	a2, a3, 0x1e60 <main+0x270>
+    1e5c: 13 06 70 02  	li	a2, 39
+    1e60: 29 9e        	addw	a2, a2, a0
+    1e62: 1b 05 16 00  	addiw	a0, a2, 1
+    1e66: 05 06        	addi	a2, a2, 1
+    1e68: 10 c0        	csw	a2, 0(cs0)
+    1e6a: 11 a0        	j	0x1e6e <main+0x27e>
+    1e6c: b2 85        	mv	a1, a2
+    1e6e: 13 86 05 20  	addi	a2, a1, 512
+    1e72: b7 06 40 00  	lui	a3, 1024
+    1e76: 63 ee c6 06  	bltu	a3, a2, 0x1ef2 <main+0x302>
+    1e7a: 17 27 00 00  	auipcc	ca4, 2
+    1e7e: 0f 27 67 34  	clc	ca4, 838(ca4)
+    1e82: 81 46        	li	a3, 0
+    1e84: db 05 b7 22  	cincoffset	ca1, ca4, a1
+    1e88: 23 30 c9 00  	csd	a2, 0(cs2)
+    1e8c: db a5 05 20  	csetbounds	ca1, ca1, 512
+    1e90: 13 06 00 20  	li	a2, 512
+    1e94: 13 f7 f6 00  	andi	a4, a3, 15
+    1e98: 13 67 07 06  	ori	a4, a4, 96
+    1e9c: db 87 d5 22  	cincoffset	ca5, ca1, a3
+    1ea0: 85 06        	addi	a3, a3, 1
+    1ea2: 23 80 e7 00  	csb	a4, 0(ca5)
+    1ea6: e3 97 c6 fe  	bne	a3, a2, 0x1e94 <main+0x2a4>
+    1eaa: 85 65        	lui	a1, 1
+    1eac: f9 35        	addiw	a1, a1, -2
+    1eae: 63 e2 a5 04  	bltu	a1, a0, 0x1ef2 <main+0x302>
+    1eb2: 3b 86 a9 40  	subw	a2, s3, a0
+    1eb6: 93 05 f0 02  	li	a1, 47
+    1eba: 63 64 b6 00  	bltu	a2, a1, 0x1ec2 <main+0x2d2>
+    1ebe: 13 06 f0 02  	li	a2, 47
+    1ec2: bb 05 a6 00  	addw	a1, a2, a0
+    1ec6: 32 95        	add	a0, a0, a2
+    1ec8: 05 05        	addi	a0, a0, 1
+    1eca: 1b d6 15 00  	srliw	a2, a1, 1
+    1ece: 93 06 e0 7f  	li	a3, 2046
+    1ed2: 08 c0        	csw	a0, 0(cs0)
+    1ed4: 63 ef c6 00  	bltu	a3, a2, 0x1ef2 <main+0x302>
+    1ed8: 13 c5 f5 ff  	not	a0, a1
+    1edc: 3b 05 35 01  	addw	a0, a0, s3
+    1ee0: 13 06 70 02  	li	a2, 39
+    1ee4: 63 64 c5 00  	bltu	a0, a2, 0x1eec <main+0x2fc>
+    1ee8: 13 05 70 02  	li	a0, 39
+    1eec: 2e 95        	add	a0, a0, a1
+    1eee: 09 05        	addi	a0, a0, 2
+    1ef0: 08 c0        	csw	a0, 0(cs0)
+    1ef2: 97 00 00 00  	auipcc	cra, 0
+    1ef6: e7 80 40 8b  	cjalr	-1868(cra)
+    1efa: 08 40        	clw	a0, 0(cs0)
+    1efc: 85 65        	lui	a1, 1
+    1efe: f9 35        	addiw	a1, a1, -2
+    1f00: 63 ed a5 00  	bltu	a1, a0, 0x1f1a <main+0x32a>
+    1f04: bb 85 a9 40  	subw	a1, s3, a0
+    1f08: 75 46        	li	a2, 29
+    1f0a: 63 e3 c5 00  	bltu	a1, a2, 0x1f10 <main+0x320>
+    1f0e: f5 45        	li	a1, 29
+    1f10: a9 9d        	addw	a1, a1, a0
+    1f12: 1b 85 15 00  	addiw	a0, a1, 1
+    1f16: 85 05        	addi	a1, a1, 1
+    1f18: 0c c0        	csw	a1, 0(cs0)
+    1f1a: 83 35 09 00  	cld	a1, 0(cs2)
+    1f1e: 13 86 05 40  	addi	a2, a1, 1024
+    1f22: b7 06 40 00  	lui	a3, 1024
+    1f26: 63 e9 c6 08  	bltu	a3, a2, 0x1fb8 <main+0x3c8>
+    1f2a: 17 27 00 00  	auipcc	ca4, 2
+    1f2e: 0f 27 67 29  	clc	ca4, 662(ca4)
+    1f32: 81 46        	li	a3, 0
+    1f34: db 05 b7 22  	cincoffset	ca1, ca4, a1
+    1f38: 23 30 c9 00  	csd	a2, 0(cs2)
+    1f3c: db a5 05 40  	csetbounds	ca1, ca1, 1024
+    1f40: 37 56 34 12  	lui	a2, 74565
+    1f44: 1b 06 86 67  	addiw	a2, a2, 1656
+    1f48: 13 07 00 10  	li	a4, 256
+    1f4c: 93 97 26 00  	slli	a5, a3, 2
+    1f50: db 87 f5 22  	cincoffset	ca5, ca1, a5
+    1f54: b3 84 c6 00  	add	s1, a3, a2
+    1f58: 85 06        	addi	a3, a3, 1
+    1f5a: 84 c3        	csw	s1, 0(ca5)
+    1f5c: e3 98 e6 fe  	bne	a3, a4, 0x1f4c <main+0x35c>
+    1f60: 05 66        	lui	a2, 1
+    1f62: 79 36        	addiw	a2, a2, -2
+    1f64: 63 6f a6 00  	bltu	a2, a0, 0x1f82 <main+0x392>
+    1f68: 3b 86 a9 40  	subw	a2, s3, a0
+    1f6c: 93 06 c0 02  	li	a3, 44
+    1f70: 63 64 d6 00  	bltu	a2, a3, 0x1f78 <main+0x388>
+    1f74: 13 06 c0 02  	li	a2, 44
+    1f78: 29 9e        	addw	a2, a2, a0
+    1f7a: 1b 05 16 00  	addiw	a0, a2, 1
+    1f7e: 05 06        	addi	a2, a2, 1
+    1f80: 10 c0        	csw	a2, 0(cs0)
+    1f82: 01 46        	li	a2, 0
+    1f84: 93 06 00 40  	li	a3, 1024
+    1f88: 5b 87 c5 22  	cincoffset	ca4, ca1, a2
+    1f8c: 23 00 c7 00  	csb	a2, 0(ca4)
+    1f90: 05 06        	addi	a2, a2, 1
+    1f92: e3 1b d6 fe  	bne	a2, a3, 0x1f88 <main+0x398>
+    1f96: 85 65        	lui	a1, 1
+    1f98: f9 35        	addiw	a1, a1, -2
+    1f9a: 63 e9 a5 0a  	bltu	a1, a0, 0x204c <main+0x45c>
+    1f9e: bb 85 a9 40  	subw	a1, s3, a0
+    1fa2: 13 06 80 02  	li	a2, 40
+    1fa6: 63 e4 c5 00  	bltu	a1, a2, 0x1fae <main+0x3be>
+    1faa: 93 05 80 02  	li	a1, 40
+    1fae: a9 9d        	addw	a1, a1, a0
+    1fb0: 1b 85 15 00  	addiw	a0, a1, 1
+    1fb4: 85 05        	addi	a1, a1, 1
+    1fb6: 0c c0        	csw	a1, 0(cs0)
+    1fb8: 85 65        	lui	a1, 1
+    1fba: f9 35        	addiw	a1, a1, -2
+    1fbc: 63 e8 a5 08  	bltu	a1, a0, 0x204c <main+0x45c>
+    1fc0: bb 85 a9 40  	subw	a1, s3, a0
+    1fc4: 7d 46        	li	a2, 31
+    1fc6: 63 e3 c5 00  	bltu	a1, a2, 0x1fcc <main+0x3dc>
+    1fca: fd 45        	li	a1, 31
+    1fcc: 2d 9d        	addw	a0, a0, a1
+    1fce: 93 05 15 00  	addi	a1, a0, 1
+    1fd2: 1b 56 15 00  	srliw	a2, a0, 1
+    1fd6: 93 06 e0 7f  	li	a3, 2046
+    1fda: 0c c0        	csw	a1, 0(cs0)
+    1fdc: 63 e8 c6 06  	bltu	a3, a2, 0x204c <main+0x45c>
+    1fe0: 93 45 f5 ff  	not	a1, a0
+    1fe4: bb 85 35 01  	addw	a1, a1, s3
+    1fe8: 93 06 60 03  	li	a3, 54
+    1fec: 1b 06 15 00  	addiw	a2, a0, 1
+    1ff0: 63 e4 d5 00  	bltu	a1, a3, 0x1ff8 <main+0x408>
+    1ff4: 93 05 60 03  	li	a1, 54
+    1ff8: 3b 85 c5 00  	addw	a0, a1, a2
+    1ffc: b2 95        	add	a1, a1, a2
+    1ffe: 85 05        	addi	a1, a1, 1
+    2000: 1b 56 15 00  	srliw	a2, a0, 1
+    2004: 93 06 e0 7f  	li	a3, 2046
+    2008: 0c c0        	csw	a1, 0(cs0)
+    200a: 63 e1 c6 04  	bltu	a3, a2, 0x204c <main+0x45c>
+    200e: 93 45 f5 ff  	not	a1, a0
+    2012: 3b 86 35 01  	addw	a2, a1, s3
+    2016: 93 05 c0 02  	li	a1, 44
+    201a: 63 64 b6 00  	bltu	a2, a1, 0x2022 <main+0x432>
+    201e: 13 06 c0 02  	li	a2, 44
+    2022: bb 05 a6 00  	addw	a1, a2, a0
+    2026: 32 95        	add	a0, a0, a2
+    2028: 09 05        	addi	a0, a0, 2
+    202a: 05 66        	lui	a2, 1
+    202c: 71 36        	addiw	a2, a2, -4
+    202e: 08 c0        	csw	a0, 0(cs0)
+    2030: 63 6e b6 00  	bltu	a2, a1, 0x204c <main+0x45c>
+    2034: 33 85 b9 40  	sub	a0, s3, a1
+    2038: 79 35        	addiw	a0, a0, -2
+    203a: 13 06 a0 02  	li	a2, 42
+    203e: 63 64 c5 00  	bltu	a0, a2, 0x2046 <main+0x456>
+    2042: 13 05 a0 02  	li	a0, 42
+    2046: 2e 95        	add	a0, a0, a1
+    2048: 0d 05        	addi	a0, a0, 3
+    204a: 08 c0        	csw	a0, 0(cs0)
+    204c: 97 00 00 00  	auipcc	cra, 0
+    2050: e7 80 c0 a6  	cjalr	-1428(cra)
+    2054: 0c 40        	clw	a1, 0(cs0)
+    2056: 05 65        	lui	a0, 1
+    2058: 79 35        	addiw	a0, a0, -2
+    205a: 63 64 b5 06  	bltu	a0, a1, 0x20c2 <main+0x4d2>
+    205e: 3b 86 b9 40  	subw	a2, s3, a1
+    2062: 13 05 40 02  	li	a0, 36
+    2066: 63 64 a6 00  	bltu	a2, a0, 0x206e <main+0x47e>
+    206a: 13 06 40 02  	li	a2, 36
+    206e: 3b 85 c5 00  	addw	a0, a1, a2
+    2072: b2 95        	add	a1, a1, a2
+    2074: 13 86 15 00  	addi	a2, a1, 1
+    2078: 9b 56 15 00  	srliw	a3, a0, 1
+    207c: 13 07 e0 7f  	li	a4, 2046
+    2080: 10 c0        	csw	a2, 0(cs0)
+    2082: 63 60 d7 04  	bltu	a4, a3, 0x20c2 <main+0x4d2>
+    2086: 93 c5 f5 ff  	not	a1, a1
+    208a: bb 85 35 01  	addw	a1, a1, s3
+    208e: 7d 46        	li	a2, 31
+    2090: 63 e3 c5 00  	bltu	a1, a2, 0x2096 <main+0x4a6>
+    2094: fd 45        	li	a1, 31
+    2096: 3b 06 b5 00  	addw	a2, a0, a1
+    209a: 2e 95        	add	a0, a0, a1
+    209c: 93 05 25 00  	addi	a1, a0, 2
+    20a0: 85 66        	lui	a3, 1
+    20a2: f1 36        	addiw	a3, a3, -4
+    20a4: 0c c0        	csw	a1, 0(cs0)
+    20a6: 63 ee c6 00  	bltu	a3, a2, 0x20c2 <main+0x4d2>
+    20aa: b3 85 a9 40  	sub	a1, s3, a0
+    20ae: f9 35        	addiw	a1, a1, -2
+    20b0: 13 06 e0 02  	li	a2, 46
+    20b4: 63 e4 c5 00  	bltu	a1, a2, 0x20bc <main+0x4cc>
+    20b8: 93 05 e0 02  	li	a1, 46
+    20bc: 2e 95        	add	a0, a0, a1
+    20be: 0d 05        	addi	a0, a0, 3
+    20c0: 08 c0        	csw	a0, 0(cs0)
+    20c2: 01 45        	li	a0, 0
+    20c4: 86 20        	clc	cra, 64(csp)
+    20c6: 42 34        	clc	cs0, 48(csp)
+    20c8: 82 34        	clc	cs1, 32(csp)
+    20ca: 42 29        	clc	cs2, 16(csp)
+    20cc: 82 29        	clc	cs3, 0(csp)
+    20ce: 61 61        	cincoffset	csp, csp, 80
+    20d0: 82 80        	cret
+
+00000000000020d2 <_start>:
+    20d2: 7d 71        	cincoffset	csp, csp, -16
+    20d4: 06 a0        	csc	cra, 0(csp)
+    20d6: 97 00 00 00  	auipcc	cra, 0
+    20da: e7 80 a0 b1  	cjalr	-1254(cra)
+    20de: 01 00        	nop
+    20e0: fd bf        	j	0x20de <_start+0xc>

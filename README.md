@@ -155,8 +155,14 @@ Generate and analyze assembly code for:
 # Build everything and run comprehensive analysis
 make all
 
+# Run the fair comparison analysis (NEW!)
+make fair-comparison
+
 # Run the complete analysis pipeline
 ./comparative-analysis/comprehensive_analysis.sh
+
+# Run stress tests that push CHERI to its limits
+make fair-stress-tests
 
 # Explore specific edge cases
 cd extreme-details/edge-cases/boundary-conditions/
@@ -168,6 +174,30 @@ cat extreme-details/assembly-walkthrough/buffer-overflow-walkthrough.md
 # Study CHERI capability deep dive
 cat extreme-details/capability-deep-dive/cheri-capability-analysis.md
 ```
+
+## 🧪 **Fair Comparison Analysis - NEW!**
+
+The platform now includes comprehensive **fair comparison testing** designed to push CHERI to its limits and provide balanced analysis:
+
+### What Makes It "Fair"
+- ✅ **Identical Compilation Conditions**: Same optimization levels, flags, and debugging info
+- ✅ **Stress Tests**: Scenarios specifically designed to highlight CHERI overhead
+- ✅ **Balanced Analysis**: Shows both advantages and trade-offs objectively
+- ✅ **Quantitative Results**: Concrete metrics on memory usage, performance, and binary size
+
+### Key Test Areas
+- **Memory Overhead**: Capability storage vs pointer storage comparison
+- **Performance Impact**: Validation overhead in tight loops and frequent operations
+- **Binary Size Analysis**: Code size differences between architectures
+- **Edge Cases**: Real-time constraints, memory fragmentation, high-frequency access
+
+### Results Generated
+- Binary size comparisons with percentage overhead analysis
+- Assembly instruction count differences
+- CHERI-specific instruction analysis
+- Comprehensive markdown reports with fair assessment
+
+**📖 [Complete Fair Comparison Guide](FAIR_COMPARISON_GUIDE.md)** - Detailed methodology and interpretation guide.
 
 ## 📊 Expected Outcomes
 

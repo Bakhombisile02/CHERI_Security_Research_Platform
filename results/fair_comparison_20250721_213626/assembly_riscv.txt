@@ -1,0 +1,26 @@
+
+/Users/dlaba556/CHERI_Security_Research_Platform/results/fair_comparison_20250721_213626/off_by_one_riscv:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+00000000000100e8 <main>:
+   100e8:	4501                	li	a0,0
+   100ea:	8082                	ret
+
+00000000000100ec <simple_strcpy>:
+   100ec:	0005c783          	lbu	a5,0(a1)
+   100f0:	cb81                	beqz	a5,10100 <simple_strcpy+0x14>
+   100f2:	00f50023          	sb	a5,0(a0)
+   100f6:	0015c783          	lbu	a5,1(a1)
+   100fa:	0585                	addi	a1,a1,1
+   100fc:	0505                	addi	a0,a0,1
+   100fe:	fbf5                	bnez	a5,100f2 <simple_strcpy+0x6>
+   10100:	00050023          	sb	zero,0(a0)
+   10104:	8082                	ret
+
+0000000000010106 <test_off_by_one_overflow>:
+   10106:	8082                	ret
+
+0000000000010108 <test_boundary_cases>:
+   10108:	8082                	ret
