@@ -1,0 +1,52 @@
+# Fair Comparison Makefile
+# Ensures both CHERI and Standard RISC-V have equivalent compilation conditions
+
+# Compiler settings
+RISCV_CC = riscv64-unknown-elf-gcc
+CHERI_CC = /Users/dlaba556/cheri/output/sdk/bin/clang
+
+# Fair optimization levels (both use same optimization)
+COMMON_CFLAGS = -O2 -g -Wall -Wextra
+COMMON_LDFLAGS = -static
+
+# Standard RISC-V flags
+RISCV_CFLAGS = $(COMMON_CFLAGS) -march=rv64imac -mabi=lp64
+RISCV_LDFLAGS = $(COMMON_LDFLAGS)
+
+# CHERI flags (equivalent optimization and features)
+CHERI_CFLAGS = $(COMMON_CFLAGS) --target=riscv64-unknown-freebsd
+CHERI_LDFLAGS = $(COMMON_LDFLAGS)
+
+# Fair comparison targets
+fair-buffer-overflow: buffer_overflow_fair_riscv buffer_overflow_fair_cheri
+fair-use-after-free: use_after_free_fair_riscv use_after_free_fair_cheri
+fair-advanced: advanced_fair_riscv advanced_fair_cheri
+
+# Standard RISC-V targets
+buffer_overflow_fair_riscv: ../standard-riscv/buffer_overflow.c
+	$(RISCV_CC) $(RISCV_CFLAGS) -o $@ $< $(RISCV_LDFLAGS)
+
+use_after_free_fair_riscv: ../standard-riscv/use_after_free.c
+	$(RISCV_CC) $(RISCV_CFLAGS) -o $@ $< $(RISCV_LDFLAGS)
+
+# CHERI targets
+buffer_overflow_fair_cheri: ../authentic-cheri/buffer_overflow_cheri.c
+	$(CHERI_CC) $(CHERI_CFLAGS) -o $@ $< $(CHERI_LDFLAGS)
+
+use_after_free_fair_cheri: ../authentic-cheri/use_after_free_cheri.c
+	$(CHERI_CC) $(CHERI_CFLAGS) -o $@ $< $(CHERI_LDFLAGS)
+
+# Analysis targets
+size-comparison:
+	@echo "=== FAIR SIZE COMPARISON ==="
+	@ls -la *_fair_riscv *_fair_cheri | awk '{print $$9, $$5}' | sort
+
+instruction-comparison:
+	@echo "=== FAIR INSTRUCTION COMPARISON ==="
+	@objdump -d buffer_overflow_fair_riscv | wc -l
+	@objdump -d buffer_overflow_fair_cheri | wc -l
+
+clean:
+	rm -f *_fair_riscv *_fair_cheri
+
+.PHONY: fair-buffer-overflow fair-use-after-free fair-advanced size-comparison instruction-comparison clean

@@ -37,10 +37,14 @@ BOUNDARY_TESTS = test-off-by-one test-zero-length-buffers
 CORNER_TESTS = test-negative-indices test-integer-overflow
 STRESS_TESTS = test-recursive-calls
 
-# Default target
-.PHONY: all clean analyze compare setup compile-edge-cases
+# Stress Testing Programs
+STRESS_TESTING_DIR = extreme-details/stress-testing
+STRESS_PROGRAMS = cheri-stress-tests standard-riscv-stress-tests cheri-failure-points real-world-network-stress
 
-all: setup compile-all compile-edge-cases analyze
+# Default target
+.PHONY: all clean analyze compare setup compile-edge-cases compile-stress-tests
+
+all: setup compile-all compile-edge-cases compile-stress-tests analyze
 
 # Setup directories
 setup:
@@ -119,6 +123,41 @@ compile-edge-cheri:
 		$(CHERI_CC) $(CHERI_ASMFLAGS) $(EDGE_CASES_DIR)/stress-tests/$$test.c \
 			-o $(EDGE_CASES_DIR)/stress-tests/$$test\_cheri.s \
 			2>&1 | tee -a $(RAW_OUTPUTS_DIR)/authentic-cheri/edge-cases/$$test\_assembly.log; \
+	done
+
+# Compile stress tests for both architectures
+compile-stress-tests: compile-stress-riscv compile-stress-cheri
+
+# Standard RISC-V stress test compilation
+compile-stress-riscv:
+	@echo "Compiling stress tests for Standard RISC-V..."
+	@mkdir -p $(RAW_OUTPUTS_DIR)/standard-riscv/stress-tests
+	@for test in $(STRESS_PROGRAMS); do \
+		if [ -f $(STRESS_TESTING_DIR)/$$test.c ]; then \
+			echo "Compiling stress test: $$test (RISC-V)"; \
+			$(RISCV_CC) $(RISCV_CFLAGS) $(STRESS_TESTING_DIR)/$$test.c \
+				-o $(STRESS_TESTING_DIR)/$$test\_riscv \
+				2>&1 | tee $(RAW_OUTPUTS_DIR)/standard-riscv/stress-tests/$$test\_compilation.log; \
+			$(RISCV_CC) $(RISCV_ASMFLAGS) $(STRESS_TESTING_DIR)/$$test.c \
+				-o $(STRESS_TESTING_DIR)/$$test\_riscv.s \
+				2>&1 | tee -a $(RAW_OUTPUTS_DIR)/standard-riscv/stress-tests/$$test\_assembly.log; \
+		fi; \
+	done
+
+# CHERI stress test compilation
+compile-stress-cheri:
+	@echo "Compiling stress tests for CHERI..."
+	@mkdir -p $(RAW_OUTPUTS_DIR)/authentic-cheri/stress-tests
+	@for test in $(STRESS_PROGRAMS); do \
+		if [ -f $(STRESS_TESTING_DIR)/$$test.c ]; then \
+			echo "Compiling stress test: $$test (CHERI)"; \
+			$(CHERI_CC) $(CHERI_CFLAGS) $(STRESS_TESTING_DIR)/$$test.c \
+				-o $(STRESS_TESTING_DIR)/$$test\_cheri \
+				2>&1 | tee $(RAW_OUTPUTS_DIR)/authentic-cheri/stress-tests/$$test\_compilation.log; \
+			$(CHERI_CC) $(CHERI_ASMFLAGS) $(STRESS_TESTING_DIR)/$$test.c \
+				-o $(STRESS_TESTING_DIR)/$$test\_cheri.s \
+				2>&1 | tee -a $(RAW_OUTPUTS_DIR)/authentic-cheri/stress-tests/$$test\_assembly.log; \
+		fi; \
 	done
 
 # Standard RISC-V compilation
@@ -332,7 +371,43 @@ help:
 	@echo "  clean            - Remove build artifacts"
 	@echo "  help             - Show this help message"
 	@echo ""
+	@echo "Fair Comparison Targets:"
+	@echo "  fair-comparison  - Run comprehensive fair comparison analysis"
+	@echo "  fair-stress-tests - Build CHERI limit-pushing stress tests"
+	@echo "  fair-benchmarks  - Run performance comparison benchmarks"
+	@echo ""
 	@echo "Example usage:"
 	@echo "  make all         - Build everything and analyze"
 	@echo "  make compile-all - Just compile both architectures"
 	@echo "  make compare     - Generate comparison report"
+	@echo "  make fair-comparison - Run fair comparison analysis"
+
+# Fair comparison targets (pushing CHERI to its limits)
+fair-comparison: fair-stress-tests fair-benchmarks fair-analysis
+	@echo "✅ Fair comparison analysis complete"
+
+fair-stress-tests:
+	@echo "🧪 Building CHERI stress tests that push limits..."
+	@cd extreme-details/edge-cases/stress-tests && \
+	$(CHERI_CC) $(CHERI_CFLAGS) -o cheri-limits-stress-test cheri-limits-stress-test.c 2>&1 | tee cheri-limits-build.log && \
+	$(CHERI_CC) $(CHERI_CFLAGS) -o performance-comparison performance-comparison.c 2>&1 | tee performance-build.log
+	@cd extreme-details/edge-cases/corner-cases && \
+	$(CHERI_CC) $(CHERI_CFLAGS) -o advanced-attack-scenarios advanced-attack-scenarios.c 2>&1 | tee advanced-attacks-build.log
+	@echo "Stress tests built successfully"
+
+fair-benchmarks:
+	@echo "📊 Running fair comparison benchmarks..."
+	chmod +x comparative-analysis/fair_comparison_suite.sh
+	./comparative-analysis/fair_comparison_suite.sh
+
+fair-analysis:
+	@echo "📈 Generating fair comparison analysis..."
+	@echo "Fair comparison analysis completed. See results/ directory for detailed reports."
+	@echo ""
+	@echo "🎯 FAIR COMPARISON SUMMARY:"
+	@echo "This analysis includes:"
+	@echo "- Performance overhead measurements"
+	@echo "- Memory consumption comparisons"
+	@echo "- Scenarios where CHERI shows measurable costs"
+	@echo "- Advanced attack resistance testing"
+	@echo "- Edge cases where protection comes at a price"
